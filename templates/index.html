@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>AI女友 · 真实恋爱模拟</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- 顶部栏 -->
+    <header class="top-bar">
+        <div class="avatar-container" id="avatarContainer">
+            <div class="avatar" id="avatarIcon">👩</div>
+            <span class="name" id="gfName">未选择女友</span>
+        </div>
+        <div class="top-actions">
+            <button id="settingsBtn" class="icon-btn">⚙️</button>
+        </div>
+    </header>
+
+    <!-- 女友信息下拉面板（默认隐藏） -->
+    <div id="infoPanel" class="info-panel hidden">
+        <div class="status-panel" id="statusPanel">
+            <!-- 动态填充状态 -->
+        </div>
+        <div class="controls">
+            <label>
+                <input type="checkbox" id="useApi" checked> 使用AI生成对话
+            </label>
+            <button id="renameBtn" class="btn secondary">改名</button>
+            <button id="resetBtn" class="btn secondary">重新相亲</button>
+        </div>
+    </div>
+
+    <!-- 主内容区：对话历史和交互 -->
+    <main class="main">
+        <div class="chat-history" id="chatHistory">
+            <!-- 动态填充对话 -->
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="输入消息..." autocomplete="off">
+            <button id="sendBtn" class="btn primary">发送</button>
+        </div>
+
+        <div class="event-buttons">
+            <button class="btn event" data-action="chat">聊天</button>
+            <button class="btn event" data-action="gift" data-gift="鲜花">送鲜花</button>
+            <button class="btn event" data-action="gift" data-gift="巧克力">送巧克力</button>
+            <button class="btn event" data-action="gift" data-gift="首饰">送首饰</button>
+            <button class="btn event" data-action="gift" data-gift="书籍">送书籍</button>
+            <button class="btn event" data-action="date">约会</button>
+            <button class="btn event" data-action="quarrel">吵架</button>
+            <button class="btn event" data-action="surprise">惊喜</button>
+            <button class="btn event" data-action="festival">节日庆祝</button>
+            <button class="btn event" data-action="propose">求婚</button>
+        </div>
+    </main>
+
+    <!-- 创建女友模态框（包含API设置） -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <h2>创建你的女友</h2>
+            <form id="createForm">
+                <label>职业:</label>
+                <select id="profession" required></select>
+
+                <label>年龄 (18-80):</label>
+                <input type="number" id="age" min="18" max="80" value="25" required>
+
+                <label>姓名:</label>
+                <input type="text" id="name" placeholder="输入姓名" required>
+
+                <label>身高 (cm):</label>
+                <input type="number" id="height" min="140" max="190" required>
+
+                <label>体重 (kg):</label>
+                <input type="number" id="weight" min="40" max="90" required>
+
+                <label>发型:</label>
+                <select id="hairStyle" required></select>
+
+                <label>脸型:</label>
+                <select id="faceShape" required></select>
+
+                <label>性格:</label>
+                <select id="personality" required></select>
+
+                <hr>
+                <h3>API 设置</h3>
+                <div class="api-settings">
+                    <label>
+                        <input type="checkbox" id="useApiCreate" checked> 使用AI生成对话
+                    </label>
+                    <label>API Key:</label>
+                    <input type="text" id="apiKey" placeholder="sk-...">
+
+                    <label>模型名称:</label>
+                    <input type="text" id="apiModel" value="deepseek-chat">
+
+                    <label>Base URL:</label>
+                    <input type="url" id="apiBaseUrl" value="https://api.deepseek.com/v1/chat/completions">
+
+                    <label>Temperature (0-2):</label>
+                    <input type="number" id="apiTemperature" step="0.1" min="0" max="2" value="0.8">
+
+                    <label>Max Tokens:</label>
+                    <input type="number" id="apiMaxTokens" min="1" max="4096" value="200">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="testConnectionBtn" class="btn secondary">测试连接</button>
+                    <button type="submit" id="startGameBtn" class="btn primary">开始游戏</button>
+                </div>
+                <div id="connectionResult" class="connection-result"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- API设置模态框（用于主界面修改） -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h2>API 设置</h2>
+            <form id="settingsForm">
+                <label>API Key:</label>
+                <input type="text" id="settingsApiKey" placeholder="sk-..." required>
+
+                <label>模型名称:</label>
+                <input type="text" id="settingsApiModel" value="deepseek-chat" required>
+
+                <label>Base URL:</label>
+                <input type="url" id="settingsApiBaseUrl" value="https://api.deepseek.com/v1/chat/completions" required>
+
+                <label>Temperature (0-2):</label>
+                <input type="number" id="settingsApiTemperature" step="0.1" min="0" max="2" value="0.8" required>
+
+                <label>Max Tokens:</label>
+                <input type="number" id="settingsApiMaxTokens" min="1" max="4096" value="200" required>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn primary">保存</button>
+                    <button type="button" class="btn secondary" onclick="document.getElementById('settingsModal').classList.remove('show')">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
